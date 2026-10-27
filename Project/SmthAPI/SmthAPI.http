@@ -1,0 +1,6 @@
+@SmthAPI_HostAddress = http://localhost:5139
+
+GET {{SmthAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

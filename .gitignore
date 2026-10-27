@@ -103,3 +103,12 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+
+/DdaniGame/[Ll]ibrary/
+/DdaniGame/[Tt]emp/
+/DdaniGame/[Oo]bj/
+/DdaniGame/[Bb]uild/
+/DdaniGame/[Bb]uilds/
+/DdaniGame/[Ll]ogs/
+/DdaniGame/[Uu]ser[Ss]ettings/
