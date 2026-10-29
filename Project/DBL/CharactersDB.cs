@@ -33,7 +33,7 @@ namespace DBL
             p.Lvl = int.Parse(row[2].ToString());
             p.Class = row[3].ToString();
             p.Money = int.Parse(row[4].ToString());
-            p.Multyplier = int.Parse((row[5].ToString()) );
+            p.Multiplier = int.Parse((row[5].ToString()) );
 
 
             return p;
@@ -47,7 +47,7 @@ namespace DBL
             fields.Add("Lvl", Characters.Lvl);
             fields.Add("class", Characters.Class);
             fields.Add("Money", Characters.Money);
-            fields.Add("Multyplier", Characters.Multyplier);
+            fields.Add("Multiplier", Characters.Multiplier);
 
 
             return await InsertAsync(fields);
@@ -61,7 +61,7 @@ namespace DBL
             fields.Add("Lvl", Characters.Lvl);
             fields.Add("class", Characters.Class);
             fields.Add("Money", Characters.Money);
-            fields.Add("Multyplier", Characters.Multyplier);
+            fields.Add("Multiplier", Characters.Multiplier);
 
 
             return await base.UpdateAsync(fields, Characters.UserID);

@@ -1,0 +1,154 @@
+﻿```razor
+@* //https://localhost:7061/api/CharacterDB/GetUsers
+    //https://localhost:7061/api/CharacterDB/InsertUser
+    //https://localhost:7061/api/CharacterDB/UpdateUser
+    //https://localhost:7061/api/CharacterDB/DeleteUser *@
+
+@page "/signup"
+
+<div class="signup-container">
+
+    <div class="signup-picture">
+        <img src="resources/signupPic.jpg" alt="Fantasy picture" />
+    </div>
+
+    <div class="signup-form">
+        <h3>Sign Up</h3>
+
+        <div>
+            <label>Username:</label>
+            <input type="text" @bind="username" />
+        </div>
+
+        <div>
+            <label>Email:</label>
+            <input type="email" @bind="Email" />
+        </div>
+
+        <div>
+            <label>Password:</label>
+            <input type="password" @bind="password" />
+        </div>
+
+        <button @onclick="Signup">Sign Up</button>
+
+        <p>@message</p>
+    </div>
+
+</div>
+
+<style>
+    .signup-container {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .signup-picture {
+        width: 50%;
+        height: 100vh;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+        .signup-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+    .signup-form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 50px;
+        max-width: 450px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+
+        .signup-form h3 {
+            margin-bottom: 30px;
+        }
+
+        .signup-form div {
+            margin-bottom: 20px;
+        }
+
+        .signup-form label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .signup-form input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .signup-form button {
+            margin-top: 10px;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+    @@media (max-width: 700px) {
+        .signup-container {
+            flex-direction: column;
+        }
+
+        .signup-picture {
+            width: 100%;
+            height: 40vh;
+        }
+
+        .signup-form {
+            width: 100%;
+            max-width: none;
+            padding: 30px;
+        }
+    }
+</style>
+
+@code {
+    HttpClient Http = new HttpClient();
+
+    string api = "https://localhost:7105/api/UsersDB/InsertUser";
+
+    string username = "", password = "", role = "User", Email = "";
+    string message = "";
+
+    private async Task Signup()
+    {
+        var user = new
+        {
+            username = username,
+            UserPassword = password,
+            UserEmail = Email,
+            UserRole = role
+        };
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync(api, user);
+
+            if (response.IsSuccessStatusCode)
+            {
+                message = "User created successfully!";
+            }
+            else
+            {
+                message = $"Error: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            message = $"Request failed: {ex.Message}";
+        }
+    }
+}
+```

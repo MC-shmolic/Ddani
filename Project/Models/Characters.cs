@@ -14,7 +14,7 @@ namespace Models
         public int Lvl { get; set; }
         public string Class { get; set; }
         public int Money { get; set; }
-        public float Multyplier { get; set; }
+        public float Multiplier { get; set; }
 
         public Characters() { }
 
@@ -26,7 +26,7 @@ namespace Models
             Lvl = lvl;
             Class = @class;
             Money = money;
-            Multyplier = mulyiplier;
+            Multiplier = mulyiplier;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DBL
         private const string MySqlConnSTR = @"server=localhost;
                                     user id=root;
                                     password=josh17rog;                                 
-                                    database=schoolproject";
+                                    database=Ddani";
 
         protected MySqlConnection conn;
         protected MySqlCommand cmd;

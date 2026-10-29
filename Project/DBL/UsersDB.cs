@@ -40,8 +40,8 @@ namespace DBL
         public async Task<int> InsertAsync(Users Users)
         {
             Dictionary<string, object> fields = new Dictionary<string, object>();
-            fields.Add("UsersName", Users.UserName);
-            fields.Add("UsersPassword", Users.UserPassword);
+            fields.Add("UserName", Users.UserName);
+            fields.Add("UserPassword", Users.UserPassword);
             fields.Add("UserEmail", Users.UserEmail);
             fields.Add("UserRole", Users.UserRole);
 

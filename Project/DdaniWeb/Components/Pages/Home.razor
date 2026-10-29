@@ -1,7 +1,44 @@
-﻿@page "/"
+@page "/"
 
-<PageTitle>Home</PageTitle>
+<div class="map-page place-home">
 
-<h1>Hello, world!</h1>
+    <h1>The Realm of Valdoria</h1>
+    <p class="map-subtitle">Every road starts here. Pick a destination and set out.</p>
 
-Welcome to your new app.
+    <div class="world-map">
+
+        <svg class="trail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M20,68 C28,60 36,52 46,42" />
+            <path d="M46,42 C58,44 68,54 76,64" />
+            <path d="M46,42 C60,34 72,26 80,20" />
+        </svg>
+
+        <a class="map-marker pos-gate" href="login">
+            <span class="pin"></span>
+            <span class="label">Castle Gate<small>Log in</small></span>
+        </a>
+
+        <a class="map-marker pos-guild" href="signup">
+            <span class="pin"></span>
+            <span class="label">Guild Hall<small>Sign up</small></span>
+        </a>
+
+        <a class="map-marker pos-tavern" href="characters">
+            <span class="pin"></span>
+            <span class="label">The Tipsy Dragon<small>Your party</small></span>
+        </a>
+
+        <a class="map-marker pos-dungeon" href="dungeon">
+            <span class="pin"></span>
+            <span class="label">The Deep Dungeon<small>Enter if you dare</small></span>
+        </a>
+
+        <div class="compass"><span>N</span></div>
+    </div>
+
+    <div class="legend">
+        <span>&#x2715; Place you can visit</span>
+        <span>&middot;&middot;&middot; Trade road</span>
+    </div>
+
+</div>
