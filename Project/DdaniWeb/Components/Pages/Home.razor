@@ -1,44 +1,115 @@
-@* @page "/"
+@page "/"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager navigationManager
+@inject ProtectedSessionStorage MySession
 
-<div class="map-page place-home">
+<div class="topnav">
+    <a class="ddani-logo" href="/">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Ddani</span>
+    </a>
 
-    <h1>The Realm of Valdoria</h1>
-    <p class="map-subtitle">Every road starts here. Pick a destination and set out.</p>
-
-    <div class="world-map">
-
-        <svg class="trail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M20,68 C28,60 36,52 46,42" />
-            <path d="M46,42 C58,44 68,54 76,64" />
-            <path d="M46,42 C60,34 72,26 80,20" />
-        </svg>
-
-        <a class="map-marker pos-gate" href="login">
-            <span class="pin"></span>
-            <span class="label">Castle Gate<small>Log in</small></span>
-        </a>
-
-        <a class="map-marker pos-guild" href="signup">
-            <span class="pin"></span>
-            <span class="label">Guild Hall<small>Sign up</small></span>
-        </a>
-
-        <a class="map-marker pos-tavern" href="characters">
-            <span class="pin"></span>
-            <span class="label">The Tipsy Dragon<small>Your party</small></span>
-        </a>
-
-        <a class="map-marker pos-dungeon" href="dungeon">
-            <span class="pin"></span>
-            <span class="label">The Deep Dungeon<small>Enter if you dare</small></span>
-        </a>
-
-        <div class="compass"><span>N</span></div>
+    <div class="nav-links">
+        <a href="/Characters">Characters</a>
+        <a href="/Adventures">Adventures</a>
+        <a href="/Stories">Stories</a>
+        <a href="/Update">Stories</a>
     </div>
 
-    <div class="legend">
-        <span>&#x2715; Place you can visit</span>
-        <span>&middot;&middot;&middot; Trade road</span>
-    </div>
+    @if (!string.IsNullOrEmpty(UserName))
+    {
+        <span class="username">Welcome, @UserName</span>
+    }
+</div>
 
-</div> *@
+
+<h1>Every adventure strats with a character</h1>
+<p>Create your next legendary adventurer with the help of D&D Beyond! Whether you’re forging
+    a spell-slinger, a sword-swinger, or something entirely unique, your character’s journey begins here.</p>
+<button>Build A Character</button>
+
+<style>
+    .topnav {
+        display: flex;
+        align-items: center;
+        background: #252525;
+        padding: 10px 35px;
+        gap: 40px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .ddani-logo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+        color: #d6ad60;
+        font-family: Georgia, serif;
+        font-size: 30px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        transition: 0.3s;
+    }
+
+        .ddani-logo:hover {
+            color: #f2d18c;
+            transform: scale(1.05);
+        }
+
+    .logo-icon {
+        font-size: 27px;
+        color: #b88b42;
+    }
+
+    .logo-text {
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            padding: 12px 16px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+            .nav-links a:hover {
+                color: #d6ad60;
+                background-color: #383838;
+                border-radius: 5px;
+            }
+
+    .username {
+        color: #d6ad60;
+        font-size: 15px;
+    }
+</style>
+
+@code {
+    private string UserName;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var name = await MySession.GetAsync<string>("name");
+
+        if (name.Success)
+        {
+            UserName = name.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            navigationManager.NavigateTo("/login");
+        }
+    }
+}

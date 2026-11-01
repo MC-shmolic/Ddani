@@ -44,5 +44,25 @@ namespace SmthAPI.Controllers
             int num = await UsersDB.DeleteAsync(id);
             return num;
         }
+
+        [HttpPost]
+        [ActionName("Login")]
+        public async Task<int> Login([FromBody] Users u)
+        {
+            UsersDB UsersDB = new UsersDB();
+            List<Users> characters = await UsersDB.GetAllAsync();
+            foreach(Users ch in characters)
+            {
+                if (u.UserName == ch.UserName && u.UserPassword == ch.UserPassword)
+                {
+                    if (u.UserRole == "Admin")
+                        return 2;
+                    return 1;
+                }
+            }
+
+            return 0;
+        }
     }
 }
+

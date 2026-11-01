@@ -64,3 +64,24 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+}
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+        .nav-links a:hover {
+            color: #d4a85a;
+        }
+
+        .nav-links a.active {
+            color: #d4a85a;
+            border-bottom: 2px solid #d4a85a;
+            padding-bottom: 5px;
+        }

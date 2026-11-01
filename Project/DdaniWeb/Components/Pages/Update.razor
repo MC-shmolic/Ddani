@@ -1,0 +1,124 @@
+﻿@page "/update"
+
+<div class="update-page">
+    <div class="update-card">
+        <h3>Update</h3>
+
+        <div class="update-field">
+            <label>Username:</label>
+            <input type="text" @bind="username" />
+        </div>
+
+        <div class="update-field">
+            <label>Email:</label>
+            <input type="email" @bind="email" />
+        </div>
+
+        <div class="update-field">
+            <label>Password:</label>
+            <input type="password" @bind="password" />
+        </div>
+
+        <button class="update-button" @onclick="UpdateUser">Update</button>
+
+        <p class="update-message">@message</p>
+    </div>
+</div>
+
+@code {
+    HttpClient Http = new HttpClient();
+
+    // Paste your API string here
+    string api = "https://localhost:7105/api/UsersDB/UpdateUser";
+
+    string username = "", password = "", email = "";
+    string message = "";
+
+    private async Task UpdateUser()
+    {
+        var user = new
+        {
+            username = username,
+            UserPassword = password,
+            UserEmail = email,
+            UserRole = "user"
+        };
+
+        try
+        {
+            var response = await Http.PutAsJsonAsync(api, user);
+
+            if (response.IsSuccessStatusCode)
+            {
+                message = "User updated successfully!";
+            }
+            else
+            {
+                message = $"Error: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            message = $"Request failed: {ex.Message}";
+        }
+    }
+}
+
+@* ===== DESIGN: delete this whole style block to remove the styling ===== *@
+<style>
+    .update-page {
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .update-card {
+        width: 100%;
+        max-width: 380px;
+        padding: 30px;
+        background: #f7f9fc;
+        border: 1px solid #dde3ee;
+        border-radius: 10px;
+    }
+
+        .update-card h3 {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+    .update-field {
+        margin-bottom: 18px;
+    }
+
+        .update-field label {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .update-field input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #c9d2e3;
+            border-radius: 6px;
+        }
+
+    .update-button {
+        width: 100%;
+        padding: 11px;
+        cursor: pointer;
+        background: #6c8ebf;
+        color: white;
+        border: none;
+        border-radius: 6px;
+    }
+
+        .update-button:hover {
+            background: #587aa8;
+        }
+
+    .update-message {
+        text-align: center;
+        margin-top: 14px;
+    }
+</style>
