@@ -142,7 +142,7 @@
             username = UserName,
             UserPassword = UserPassword,
             UserEmail = "Sdsd",
-            UserRole = "sdsds"
+            UserRole = "User"
         };
 
 
@@ -156,8 +156,10 @@
 
                 if (result == 1 || result == 2)
                 {
+                    if (result == 2)
+                        navigationManager.NavigateTo("/homeA");
+
                     await MySession.SetAsync("name", UserName);
-                    await MySession.SetAsync("role", result);
 
                     navigationManager.NavigateTo("/");
                 }

@@ -63,6 +63,24 @@ namespace SmthAPI.Controllers
 
             return 0;
         }
+
+
+        //[HttpPost]
+        //[ActionName("Role")]
+        //public async Task<string> Role([FromBody] Users u)
+        //{
+        //    UsersDB UsersDB = new UsersDB();
+        //    List<Users> characters = await UsersDB.GetAllAsync();
+        //    foreach (Users ch in characters)
+        //    {
+        //        if (u.UserName == ch.UserName && u.UserPassword == ch.UserPassword)
+        //        {
+        //            return u.UserRole;
+        //        }
+        //    }
+
+        //    return "";
+        //}
     }
 }
 

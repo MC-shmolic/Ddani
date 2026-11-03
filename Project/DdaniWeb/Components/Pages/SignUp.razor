@@ -3,6 +3,9 @@
     //https://localhost:7061/api/CharacterDB/UpdateUser
     //https://localhost:7061/api/CharacterDB/DeleteUser *@
 
+@inject NavigationManager navigationManager
+
+
 @page "/signup"
 
 <div class="signup-container">
@@ -156,6 +159,7 @@
             if (response.IsSuccessStatusCode)
             {
                 message = "User created successfully!";
+                navigationManager.NavigateTo("/login");
             }
             else
             {
