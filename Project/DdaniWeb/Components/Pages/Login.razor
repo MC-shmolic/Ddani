@@ -152,14 +152,24 @@
 
             if (response.IsSuccessStatusCode)
             {
-                int result = await response.Content.ReadFromJsonAsync<int>();
+                List<int> result = await response.Content.ReadFromJsonAsync<List<int>>();
 
-                if (result == 1 || result == 2)
+
+
+                if (result[0] == 1 || result[0] == 2)
                 {
-                    if (result == 2)
-                        navigationManager.NavigateTo("/homeA");
+                    await MySession.SetAsync("data", new string[] { result[1].ToString(), UserName });
 
-                    await MySession.SetAsync("name", UserName);
+                    var test = await MySession.GetAsync<string[]>("data");
+
+                    Console.WriteLine("LOGIN TEST:");
+                    Console.WriteLine(test.Success);
+                    Console.WriteLine(test.Value?[0]);
+                    Console.WriteLine(test.Value?[1]);
+
+                    if (result[0] == 2)
+                    { navigationManager.NavigateTo("/homeA"); Console.WriteLine("admin"); return; }
+
 
                     navigationManager.NavigateTo("/");
                 }

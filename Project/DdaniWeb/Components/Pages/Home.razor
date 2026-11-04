@@ -14,7 +14,7 @@
         <a href="/Characters">Characters</a>
         <a href="/Adventures">Adventures</a>
         <a href="/Stories">Stories</a>
-        <a href="/Update">Stories</a>
+        <a href="/Update">Update</a>
     </div>
 
     @if (!string.IsNullOrEmpty(UserName))
@@ -100,12 +100,12 @@
     {
         if (!firstRender) return;
 
-        var name = await MySession.GetAsync<string>("name");
+        var data = await MySession.GetAsync<string[]>("data");
 
-        if (name.Success)
+        if (data.Success)
         {
-            UserName = name.Value;
-            StateHasChanged();
+            int userID = int.Parse(data.Value[0]);
+            string username = data.Value[1];
         }
         else
         {

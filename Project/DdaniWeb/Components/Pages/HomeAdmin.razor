@@ -1,9 +1,302 @@
 ﻿@page "/homeA"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.AspNetCore.Components.Routing
+@using Models
+@inject NavigationManager navigationManager
+@inject ProtectedSessionStorage MySession
 
-<h3>HomeAdmin</h3>
-Hello this is an admin page 
+<div class="topnav">
+    <a class="ddani-logo" href="/">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Ddani</span>
+    </a>
 
+    <div class="nav-links">
+        <a href="/Characters">Characters</a>
+        <a href="/Adventures">Adventures</a>
+        <a href="/Stories">Stories</a>
+        <a href="/Update">Update</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(UserName))
+    {
+        <span class="username">Welcome, @UserName</span>
+    }
+</div>
+
+<h1>Hello Admin</h1>
+
+<h2>All Users</h2>
+
+@if (users == null)
+{
+    <p>Loading users...</p>
+}
+else if (users.Count == 0)
+{
+    <p>No users found.</p>
+}
+else
+{
+    <table class="users-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                if (id != user.UserID)
+                {
+                    <tr>
+                        <td>@user.UserID</td>
+                        <td>@user.UserName</td>
+                        <td>@user.UserEmail</td>
+                        <td>@user.UserRole</td>
+                        <td>
+                            @if (user.UserRole != "Admin")
+                            {
+                                <button @onclick="() => MakeAdmin(user)">
+                                    Make Admin
+                                </button>
+                            }
+                            else if(user.UserRole == "Admin")
+                            {
+                                <button @onclick="() => RemoveAdmin(user)">
+                                    Remove Admin
+                                </button>
+                            }
+
+                            <button @onclick="() => DeleteUser(user.UserID)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+<style>
+    .topnav {
+        display: flex;
+        align-items: center;
+        background: #252525;
+        padding: 10px 35px;
+        gap: 40px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .ddani-logo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+        color: #d6ad60;
+        font-family: Georgia, serif;
+        font-size: 30px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        transition: 0.3s;
+    }
+
+        .ddani-logo:hover {
+            color: #f2d18c;
+            transform: scale(1.05);
+        }
+
+    .logo-icon {
+        font-size: 27px;
+        color: #b88b42;
+    }
+
+    .logo-text {
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            padding: 12px 16px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+            .nav-links a:hover {
+                color: #d6ad60;
+                background-color: #383838;
+                border-radius: 5px;
+            }
+
+    .username {
+        color: #d6ad60;
+        font-size: 15px;
+    }
+
+    .users-table {
+        width: 90%;
+        margin: 25px auto;
+        border-collapse: collapse;
+        background: #252525;
+        color: white;
+    }
+
+        .users-table th, .users-table td {
+            padding: 14px;
+            border: 1px solid #555;
+            text-align: left;
+        }
+
+        .users-table th {
+            background: #383838;
+            color: #d6ad60;
+        }
+
+        .users-table tr:hover {
+            background: #383838;
+        }
+
+        .users-table button {
+            padding: 8px 12px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+            .users-table button:first-child {
+                background: #d6ad60;
+                color: #252525;
+            }
+
+            .users-table button:last-child {
+                background: #a83232;
+                color: white;
+            }
+</style>
 
 @code {
+    HttpClient Http = new HttpClient();
 
+    string api = "https://localhost:7105/api/UsersDB/GetUsers";
+
+    private string UserName;
+    private int id;
+    private List<Users> users;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var data = await MySession.GetAsync<string[]>("data");
+
+        if (data.Success && data.Value != null)
+        {
+            UserName = data.Value[1];
+            id = int.Parse(data.Value[0]);
+
+            try
+            {
+                users = await Http.GetFromJsonAsync<List<Users>>(api);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                users = new List<Users>();
+            }
+
+            StateHasChanged();
+        }
+        else
+        {
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task MakeAdmin(Users user)
+    {
+        var updatedUser = new Users
+        {
+            UserID = user.UserID,
+            UserName = user.UserName,
+            UserPassword = user.UserPassword,
+            UserEmail = user.UserEmail,
+            UserRole = "Admin"
+        };
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7105/api/UsersDB/UpdateUser",updatedUser);
+
+            if (response.IsSuccessStatusCode)
+            {
+                user.UserRole = "Admin";
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task RemoveAdmin(Users user)
+    {
+        var updatedUser = new Users
+        {
+            UserID = user.UserID,
+            UserName = user.UserName,
+            UserPassword = user.UserPassword,
+            UserEmail = user.UserEmail,
+            UserRole = "User"
+        };
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7105/api/UsersDB/UpdateUser", updatedUser);
+
+            if (response.IsSuccessStatusCode)
+            {
+                user.UserRole = "User";
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task DeleteUser(int userId)
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7105/api/UsersDB/DeleteUser", userId);
+
+
+            if (response.IsSuccessStatusCode)
+            {
+                users.RemoveAll(u => u.UserID == userId);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
 }

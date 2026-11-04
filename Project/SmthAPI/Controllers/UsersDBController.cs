@@ -9,7 +9,7 @@ namespace SmthAPI.Controllers
     [ApiController]
     public class UsersDBController : ControllerBase
     {
-        [HttpPost]
+        [HttpGet]
         [ActionName("GetUsers")]
         public async Task<List<Users>> GetCharacters()
         {
@@ -47,21 +47,43 @@ namespace SmthAPI.Controllers
 
         [HttpPost]
         [ActionName("Login")]
-        public async Task<int> Login([FromBody] Users u)
+        public async Task<List<int>> Login([FromBody] Users u)
         {
             UsersDB UsersDB = new UsersDB();
             List<Users> characters = await UsersDB.GetAllAsync();
-            foreach(Users ch in characters)
+
+            foreach (Users ch in characters)
             {
                 if (u.UserName == ch.UserName && u.UserPassword == ch.UserPassword)
                 {
-                    if (u.UserRole == "Admin")
-                        return 2;
-                    return 1;
+                    if (ch.UserRole == "Admin")
+                        return new List<int> { 2, ch.UserID };
+
+                    return new List<int> { 1, ch.UserID };
                 }
             }
 
-            return 0;
+            return new List<int> { 0, -1 };
+        }
+
+
+        [HttpPost]
+        [ActionName("GetUser")]
+        public async Task<Users> GetUser([FromBody] int id)
+        {
+            UsersDB UsersDB = new UsersDB();
+            List<Users> characters = await UsersDB.GetAllAsync();
+
+            foreach (Users ch in characters)
+            {
+                if (id == ch.UserID)
+                {
+                    Users user = new Users(ch.UserID , ch.UserName , ch.UserPassword , ch.UserEmail , ch.UserRole);
+                    return user;
+                }
+            }
+
+            return null;
         }
 
 

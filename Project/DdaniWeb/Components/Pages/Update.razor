@@ -1,4 +1,8 @@
 ﻿@page "/update"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage MySession
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
+@using Models
 
 <div class="update-page">
     <div class="update-card">
@@ -6,17 +10,22 @@
 
         <div class="update-field">
             <label>Username:</label>
-            <input type="text" @bind="username" />
+            <input type="text" @bind="username" placeholder="@originalUsername" />
         </div>
 
         <div class="update-field">
             <label>Email:</label>
-            <input type="email" @bind="email" />
+            <input type="email" @bind="email" placeholder="@originalEmail" />
         </div>
 
         <div class="update-field">
             <label>Password:</label>
-            <input type="password" @bind="password" />
+            <input type="password" @bind="password" placeholder="Enter new password" />
+        </div>
+
+        <div class="update-field">
+            <label>Confirm Password:</label>
+            <input type="password" @bind="confirm_password" placeholder="confirm password" />
         </div>
 
         <button class="update-button" @onclick="UpdateUser">Update</button>
@@ -28,34 +37,85 @@
 @code {
     HttpClient Http = new HttpClient();
 
-    // Paste your API string here
     string api = "https://localhost:7105/api/UsersDB/UpdateUser";
+    string GetDataAPI = "https://localhost:7105/api/UsersDB/GetUser";
 
     string username = "", password = "", email = "";
+    string originalUsername = "", originalEmail = "";
     string message = "";
+    string confirm_password = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await MySession.GetAsync<string[]>("data");
+
+        if (!data.Success || data.Value == null)
+        {
+            navigationManager.NavigateTo("/login");
+            return;
+        }
+
+        int userID = int.Parse(data.Value[0]);
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync(GetDataAPI, userID);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var user = await response.Content.ReadFromJsonAsync<Users>();
+
+                if (user != null)
+                {
+                    originalUsername = user.UserName;
+                    originalEmail = user.UserEmail;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            message = $"Request failed: {ex.Message}";
+        }
+    }
 
     private async Task UpdateUser()
     {
+        var data = await MySession.GetAsync<string[]>("data");
+
+        if (!data.Success || data.Value == null)
+        {
+            message = "Please log in first.";
+            navigationManager.NavigateTo("/login");
+            return;
+        }
+
         var user = new
         {
-            username = username,
+            UserID = int.Parse(data.Value[0]),
+            UserName = string.IsNullOrWhiteSpace(username) ? originalUsername : username,
             UserPassword = password,
-            UserEmail = email,
-            UserRole = "user"
+            UserEmail = string.IsNullOrWhiteSpace(email) ? originalEmail : email,
+            UserRole = "User"
         };
 
         try
         {
-            var response = await Http.PutAsJsonAsync(api, user);
-
-            if (response.IsSuccessStatusCode)
+            if(password == confirm_password)
             {
-                message = "User updated successfully!";
+                var response = await Http.PostAsJsonAsync(api, user);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    message = "User updated successfully!";
+                    navigationManager.NavigateTo("/");
+                }
+                else
+                {
+                    message = $"Error: {response.StatusCode}";
+                }
             }
             else
-            {
-                message = $"Error: {response.StatusCode}";
-            }
+            { message = $"passwords dont match"; }
         }
         catch (Exception ex)
         {
