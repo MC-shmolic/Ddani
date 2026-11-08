@@ -1,0 +1,215 @@
+﻿@page "/CharactersPage"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Models
+@inject NavigationManager navigationManager
+@inject ProtectedSessionStorage MySession
+
+<div class="topnav">
+    <a class="ddani-logo" href="/">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Ddani</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/CharactersPage">Characters</a>
+        <a href="/Adventures">Adventures</a>
+        <a href="/Stories">Stories</a>
+        <a href="/Update">Update</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(UserName))
+    {
+        <span class="username">Welcome, @UserName</span>
+    }
+</div>
+
+<h1>My Characters</h1>
+
+@if (characters == null)
+{
+    <p>Loading characters...</p>
+}
+else if (characters.Count == 0)
+{
+    <p>You haven't created any characters yet.</p>
+}
+else
+{
+    <div class="characters-container">
+        @if (characters != null)
+        {
+                @foreach (Characters character in characters)
+            {
+                <div class="character-card">
+                    <h2>@character.CharacterName</h2>
+
+                    <p><b>Class:</b> @character.Class</p>
+                    <p><b>Level:</b> @character.Lvl</p>
+                    <p><b>Money:</b> @character.Money</p>
+
+                    <button @onclick="() => DeleteCharacter(character.CharacterID)">
+                        Delete
+                    </button>
+                </div>
+            }
+        }
+    </div>
+}
+
+<button class="build-character" @onclick='() => navigationManager.NavigateTo("/createcharacter")'>
+    Build A Character
+</button>
+
+<style>
+    .topnav {
+        display: flex;
+        align-items: center;
+        background: #252525;
+        padding: 10px 35px;
+        gap: 40px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .ddani-logo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+        color: #d6ad60;
+        font-family: Georgia, serif;
+        font-size: 30px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            padding: 12px 16px;
+            font-size: 16px;
+        }
+
+            .nav-links a:hover {
+                color: #d6ad60;
+                background: #383838;
+                border-radius: 5px;
+            }
+
+    .username {
+        color: #d6ad60;
+    }
+
+    .characters-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 25px;
+    }
+
+    .character-card {
+        background: #252525;
+        color: white;
+        border: 1px solid #b88b42;
+        border-radius: 10px;
+        padding: 20px;
+        width: 250px;
+    }
+
+        .character-card h2 {
+            color: #d6ad60;
+        }
+
+        .character-card button {
+            background: #a83232;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+    .build-character {
+        background: #c62828;
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 25px;
+    }
+
+        .build-character:hover {
+            background: #a31515;
+        }
+</style>
+
+@code {
+    HttpClient Http = new HttpClient();
+
+    string UserName;
+    int userID;
+
+    List<Characters> characters;
+
+    string api = "https://localhost:7105/api/CharactersDB/GetCharactersUser";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var data = await MySession.GetAsync<string[]>("data");
+
+        if (data.Success && data.Value != null)
+        {
+            UserName = data.Value[1];
+            userID = int.Parse(data.Value[0]);
+
+            try
+            {
+                var response = await Http.PostAsJsonAsync(api, userID);
+                characters = await response.Content.ReadFromJsonAsync<List<Characters>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                characters = null;
+            }
+
+            StateHasChanged();
+        }
+        else
+        {
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task DeleteCharacter(int characterID)
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync(
+                "https://localhost:7105/api/CharactersDB/DeleteCharacter",
+                characterID
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                characters.RemoveAll(c => c.CharacterID == characterID);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

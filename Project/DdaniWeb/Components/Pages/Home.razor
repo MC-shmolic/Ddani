@@ -1,115 +1,132 @@
-@page "/"
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using Microsoft.AspNetCore.Components.Routing
-@inject NavigationManager navigationManager
-@inject ProtectedSessionStorage MySession
+    @page "/"
+    @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+    @using Microsoft.AspNetCore.Components.Routing
+    @inject NavigationManager navigationManager
+    @inject ProtectedSessionStorage MySession
 
-<div class="topnav">
-    <a class="ddani-logo" href="/">
-        <span class="logo-icon">✦</span>
-        <span class="logo-text">Ddani</span>
-    </a>
+    <div class="topnav">
+        <a class="ddani-logo" href="/">
+            <span class="logo-icon">✦</span>
+            <span class="logo-text">Ddani</span>
+        </a>
 
-    <div class="nav-links">
-        <a href="/Characters">Characters</a>
-        <a href="/Adventures">Adventures</a>
-        <a href="/Stories">Stories</a>
-        <a href="/Update">Update</a>
+        <div class="nav-links">
+            <a href="/CharactersPage">Characters</a>
+            <a href="/Adventures">Adventures</a>
+            <a href="/Stories">Stories</a>
+            <a href="/Update">Update</a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(UserName))
+        {
+            <span class="username">Welcome, @UserName</span>
+        }
     </div>
 
-    @if (!string.IsNullOrEmpty(UserName))
-    {
-        <span class="username">Welcome, @UserName</span>
-    }
-</div>
 
-
-<h1>Every adventure strats with a character</h1>
-<p>Create your next legendary adventurer with the help of D&D Beyond! Whether you’re forging
-    a spell-slinger, a sword-swinger, or something entirely unique, your character’s journey begins here.</p>
-<button>Build A Character</button>
-
-<style>
-    .topnav {
-        display: flex;
-        align-items: center;
-        background: #252525;
-        padding: 10px 35px;
-        gap: 40px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .ddani-logo {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        text-decoration: none;
-        color: #d6ad60;
-        font-family: Georgia, serif;
-        font-size: 30px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        transition: 0.3s;
-    }
-
-        .ddani-logo:hover {
-            color: #f2d18c;
-            transform: scale(1.05);
+    <h1>Every adventure strats with a character</h1>
+    <p>Create your next legendary adventurer with the help of D&D Beyond! Whether you’re forging
+        a spell-slinger, a sword-swinger, or something entirely unique, your character’s journey begins here.</p>
+    <button class="build-character" @onclick='() => navigationManager.NavigateTo("/createcharacter")'>
+        Build A Character
+    </button>
+    <style>
+        .topnav {
+            display: flex;
+            align-items: center;
+            background: #252525;
+            padding: 10px 35px;
+            gap: 40px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
 
-    .logo-icon {
-        font-size: 27px;
-        color: #b88b42;
-    }
-
-    .logo-text {
-        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-    }
-
-    .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        flex: 1;
-    }
-
-        .nav-links a {
-            color: #e0e0e0;
+        .ddani-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
             text-decoration: none;
-            padding: 12px 16px;
-            font-size: 16px;
+            color: #d6ad60;
+            font-family: Georgia, serif;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 2px;
             transition: 0.3s;
         }
 
-            .nav-links a:hover {
-                color: #d6ad60;
-                background-color: #383838;
-                border-radius: 5px;
+            .ddani-logo:hover {
+                color: #f2d18c;
+                transform: scale(1.05);
             }
 
-    .username {
-        color: #d6ad60;
-        font-size: 15px;
-    }
-</style>
-
-@code {
-    private string UserName;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
-
-        var data = await MySession.GetAsync<string[]>("data");
-
-        if (data.Success)
-        {
-            int userID = int.Parse(data.Value[0]);
-            string username = data.Value[1];
+        .logo-icon {
+            font-size: 27px;
+            color: #b88b42;
         }
-        else
+
+        .logo-text {
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+            .nav-links a {
+                color: #e0e0e0;
+                text-decoration: none;
+                padding: 12px 16px;
+                font-size: 16px;
+                transition: 0.3s;
+            }
+
+                .nav-links a:hover {
+                    color: #d6ad60;
+                    background-color: #383838;
+                    border-radius: 5px;
+                }
+
+        .username {
+            color: #d6ad60;
+            font-size: 15px;
+        }
+
+        .build-character {
+        background-color: #c62828;
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .build-character:hover {
+        background-color: #a31515;
+    }
+    </style>
+
+    @code {
+        private string UserName;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            navigationManager.NavigateTo("/login");
+            if (!firstRender) return;
+
+            var data = await MySession.GetAsync<string[]>("data");
+
+            if (data.Success)
+            {
+                int userID = int.Parse(data.Value[0]);
+                string username = data.Value[1];
+            }
+            else
+            {
+                navigationManager.NavigateTo("/login");
+            }
         }
     }
-}

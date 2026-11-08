@@ -158,7 +158,7 @@
 
                 if (result[0] == 1 || result[0] == 2)
                 {
-                    await MySession.SetAsync("data", new string[] { result[1].ToString(), UserName });
+                    await MySession.SetAsync("data", new string[] { result[1].ToString(), UserName , result[0].ToString()});
 
                     var test = await MySession.GetAsync<string[]>("data");
 

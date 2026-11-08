@@ -204,7 +204,7 @@ else
 
         var data = await MySession.GetAsync<string[]>("data");
 
-        if (data.Success && data.Value != null)
+        if (data.Success && data.Value != null && int.Parse(data.Value[2]) == 2)
         {
             UserName = data.Value[1];
             id = int.Parse(data.Value[0]);
@@ -223,6 +223,7 @@ else
         }
         else
         {
+            
             navigationManager.NavigateTo("/login");
         }
     }

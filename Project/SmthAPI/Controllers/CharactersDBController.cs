@@ -9,13 +9,34 @@ namespace SmthAPI.Controllers
     [ApiController]
     public class CharactersDBController : ControllerBase
     {
-                [HttpPost]
+        [HttpGet]
         [ActionName("GetCharacters")]
         public async Task<List<Characters>> GetCharacters()
         {
             CharactersDB CharactersDB = new CharactersDB();
             List<Characters> characters = await CharactersDB.GetAllAsync();
             return characters;
+        }
+
+        [HttpPost]
+        [ActionName("GetCharactersUser")]
+        public async Task<List<Characters>> GetCharactersUser(int userID)
+        {
+            CharactersDB CharactersDB = new CharactersDB();
+
+            List<Characters> characters = await CharactersDB.GetAllAsync();
+
+            List<Characters> charcters = new List<Characters>();
+
+            foreach (Characters c in characters)
+            {
+                if (c.UserID == userID)
+                {
+                    charcters.Add(c);
+                }
+            }
+
+            return charcters;
         }
 
         [HttpPost]
