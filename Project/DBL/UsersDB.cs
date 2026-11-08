@@ -21,7 +21,7 @@ namespace DBL
 
         public async Task<List<Users>> GetAllAsync()
         {
-            return ((List<Users>)await SelectAllAsync());
+            return ((List<Users>)await SelectAllWhereAsync("UserActive" , 1));
         }
 
         protected override Users CreateModel(object[] row)
@@ -59,6 +59,16 @@ namespace DBL
 
 
             return await base.UpdateAsync(fields, Users.UserID);
+        }
+
+
+        public async Task<int> UpdateAsyncDead(int id)
+        {
+            Dictionary<string, object> fields = new Dictionary<string, object>();
+            fields.Add("UserActive", 0);
+
+
+            return await base.UpdateAsync(fields, id);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace SmthAPI.Controllers
 
         [HttpPost]
         [ActionName("GetCharactersUser")]
-        public async Task<List<Characters>> GetCharactersUser(int userID)
+        public async Task<List<Characters>> GetCharactersUser([FromBody] int UserID)
         {
             CharactersDB CharactersDB = new CharactersDB();
 
@@ -30,7 +30,7 @@ namespace SmthAPI.Controllers
 
             foreach (Characters c in characters)
             {
-                if (c.UserID == userID)
+                if (c.UserID == UserID)
                 {
                     charcters.Add(c);
                 }

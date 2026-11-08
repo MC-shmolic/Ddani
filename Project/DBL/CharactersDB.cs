@@ -28,12 +28,12 @@ namespace DBL
         {
             Characters p = new Characters();
             p.CharacterID = int.Parse(row[0].ToString());
-            p.UserID = int.Parse(row[0].ToString());
-            p.CharacterName = row[1].ToString();
-            p.Lvl = int.Parse(row[2].ToString());
-            p.Class = row[3].ToString();
-            p.Money = int.Parse(row[4].ToString());
-            p.Multiplier = int.Parse((row[5].ToString()) );
+            p.UserID = int.Parse(row[1].ToString());
+            p.CharacterName = row[2].ToString();
+            p.Lvl = int.Parse(row[3].ToString());
+            p.Class = row[4].ToString();
+            p.Money = int.Parse(row[5].ToString());
+            p.Multiplier = int.Parse((row[6].ToString()) );
 
 
             return p;

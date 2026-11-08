@@ -69,6 +69,35 @@ namespace DBL
             return list;
         }
 
+        public async Task<List<T>> SelectAllWhereAsync(string key , object value)
+        {
+            List<T> list = new List<T>();
+            cmd.CommandText = $"SELECT * FROM {GetTableName()} WHERE {key} = {value} ;";
+            if (conn.State != System.Data.ConnectionState.Open)
+                await conn.OpenAsync();
+
+            reader = (MySql.Data.MySqlClient.MySqlDataReader)await cmd.ExecuteReaderAsync();
+            //var readOnlyData = await reader.GetColumnSchemaAsync();
+            //int size = readOnlyData.Count;
+            int size = reader.FieldCount;
+            object[] row;
+            while (await reader.ReadAsync())
+            {
+                row = new object[size];
+                reader.GetValues(row);
+                T dto = CreateModel(row);
+                list.Add(dto);
+            }
+
+            if (reader != null && !reader.IsClosed)
+                await reader.CloseAsync();
+            cmd.Parameters.Clear();
+            if (conn.State == System.Data.ConnectionState.Open)
+                await conn.CloseAsync();
+
+            return list;
+        }
+
         protected async Task<int> UpdateAsync(Dictionary<string, object> fields, object id)
         {
             string setClause = "SET ";

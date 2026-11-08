@@ -156,7 +156,6 @@ else
     HttpClient Http = new HttpClient();
 
     string UserName;
-    int userID;
 
     List<Characters> characters;
 
@@ -171,7 +170,7 @@ else
         if (data.Success && data.Value != null)
         {
             UserName = data.Value[1];
-            userID = int.Parse(data.Value[0]);
+            int userID = int.Parse(data.Value[0]);
 
             try
             {

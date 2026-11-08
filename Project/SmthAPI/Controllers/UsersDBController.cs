@@ -40,8 +40,12 @@ namespace SmthAPI.Controllers
         [ActionName("DeleteUser")]
         public async Task<int> DeleteCharacter([FromBody] int id)
         {
+            //UsersDB UsersDB = new UsersDB();
+            //int num = await UsersDB.DeleteAsync(id);
+            //return num;
+
             UsersDB UsersDB = new UsersDB();
-            int num = await UsersDB.DeleteAsync(id);
+            int num = await UsersDB.UpdateAsyncDead(id);
             return num;
         }
 
