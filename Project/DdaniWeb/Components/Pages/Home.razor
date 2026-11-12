@@ -1,8 +1,10 @@
-    @page "/"
-    @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-    @using Microsoft.AspNetCore.Components.Routing
-    @inject NavigationManager navigationManager
-    @inject ProtectedSessionStorage MySession
+@page "/"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager navigationManager
+@inject ProtectedSessionStorage MySession
+
+<div class="page">
 
     <div class="topnav">
         <a class="ddani-logo" href="/">
@@ -23,110 +25,325 @@
         }
     </div>
 
+    <section class="hero">
+        <div class="hero-content">
+            <span class="eyebrow">YOUR ADVENTURE STARTS HERE</span>
 
-    <h1>Every adventure strats with a character</h1>
-    <p>Create your next legendary adventurer with the help of D&D Beyond! Whether you’re forging
-        a spell-slinger, a sword-swinger, or something entirely unique, your character’s journey begins here.</p>
-    <button class="build-character" @onclick='() => navigationManager.NavigateTo("/createcharacter")'>
-        Build A Character
-    </button>
-    <style>
-        .topnav {
-            display: flex;
-            align-items: center;
-            background: #252525;
-            padding: 10px 35px;
-            gap: 40px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            <h1>CREATE YOUR<br />LEGEND.</h1>
+
+            <p>
+                Every great adventure begins with a hero.
+                Build your character, explore magical worlds,
+                and write your own legendary story.
+            </p>
+
+            <button class="build-character"
+                    @onclick='() => navigationManager.NavigateTo("/createcharacter")'>
+                CREATE YOUR CHARACTER <span>→</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="section-heading">
+            <span>BEGIN YOUR JOURNEY</span>
+            <h2>Everything you need to play</h2>
+            <p>Your next great adventure is only a few steps away.</p>
+        </div>
+
+        <div class="feature-grid">
+
+            <div class="feature-card"
+                 @onclick='() => navigationManager.NavigateTo("/CharactersPage")'>
+                <div class="feature-icon">⚔</div>
+                <h3>Characters</h3>
+                <p>Create heroes, customize their abilities, and manage your characters.</p>
+                <span class="card-link">EXPLORE CHARACTERS →</span>
+            </div>
+
+            <div class="feature-card"
+                 @onclick='() => navigationManager.NavigateTo("/Adventures")'>
+                <div class="feature-icon">🐉</div>
+                <h3>Adventures</h3>
+                <p>Enter exciting quests, face dangerous enemies, and discover new worlds.</p>
+                <span class="card-link">EXPLORE ADVENTURES →</span>
+            </div>
+
+            <div class="feature-card"
+                 @onclick='() => navigationManager.NavigateTo("/Stories")'>
+                <div class="feature-icon">📜</div>
+                <h3>Stories</h3>
+                <p>Relive your adventures and keep track of your legendary moments.</p>
+                <span class="card-link">READ STORIES →</span>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <span>✦ DDANI</span>
+        <p>Your story. Your adventure. Your legend.</p>
+    </footer>
+
+</div>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .page {
+        min-height: 100vh;
+        background: #111315;
+        color: #e8e4dc;
+        font-family: Arial, sans-serif;
+    }
+
+    .topnav {
+        display: flex;
+        align-items: center;
+        background: #181a1c;
+        padding: 12px 6%;
+        gap: 45px;
+        border-bottom: 1px solid #39352d;
+    }
+
+    .ddani-logo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+        color: #d6ad60;
+        font-family: Georgia, serif;
+        font-size: 30px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .logo-icon {
+        font-size: 27px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+    }
+
+        .nav-links a {
+            color: #c5c3be;
+            text-decoration: none;
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: 0.2s;
         }
 
-        .ddani-logo {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            text-decoration: none;
+            .nav-links a:hover {
+                color: #d6ad60;
+            }
+
+    .username {
+        color: #d6ad60;
+        font-size: 14px;
+    }
+
+    .hero {
+        min-height: 540px;
+        display: flex;
+        align-items: center;
+        padding: 70px 10%;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(90deg, rgba(13,15,17,0.98) 0%, rgba(13,15,17,0.88) 45%, rgba(13,15,17,0.25) 100%), url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2000&q=85');
+        background-size: cover;
+        background-position: center;
+        border-bottom: 1px solid #51432d;
+    }
+
+    .hero-content {
+        max-width: 570px;
+        z-index: 1;
+    }
+
+    .eyebrow {
+        color: #d6ad60;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 4px;
+    }
+
+    .hero h1 {
+        font-family: Georgia, serif;
+        font-size: 68px;
+        line-height: 1.05;
+        margin: 22px 0;
+        color: #f1e9d8;
+        letter-spacing: 2px;
+    }
+
+    .hero p {
+        color: #c0bcb4;
+        font-size: 17px;
+        line-height: 1.8;
+        max-width: 480px;
+        margin-bottom: 30px;
+    }
+
+    .build-character {
+        background: #a52a25;
+        color: white;
+        border: 1px solid #d04b40;
+        padding: 16px 25px;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .build-character:hover {
+            background: #c03930;
+            transform: translateY(-2px);
+        }
+
+        .build-character span {
+            margin-left: 12px;
+        }
+
+    .features {
+        padding: 65px 8%;
+        text-align: center;
+    }
+
+    .section-heading > span {
+        color: #c59b52;
+        font-size: 12px;
+        letter-spacing: 3px;
+        font-weight: bold;
+    }
+
+    .section-heading h2 {
+        font-family: Georgia, serif;
+        color: #eee5d4;
+        font-size: 34px;
+        margin: 15px 0 10px;
+    }
+
+    .section-heading p {
+        color: #99958d;
+        font-size: 15px;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        margin-top: 45px;
+    }
+
+    .feature-card {
+        background: #1b1d1f;
+        border: 1px solid #39352d;
+        padding: 35px 25px;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+
+        .feature-card:hover {
+            border-color: #b88b42;
+            transform: translateY(-5px);
+            background: #222426;
+        }
+
+    .feature-icon {
+        font-size: 35px;
+        margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+        font-family: Georgia, serif;
+        font-size: 23px;
+        color: #e1bd79;
+        margin-bottom: 12px;
+    }
+
+    .feature-card p {
+        color: #aaa69e;
+        line-height: 1.7;
+        font-size: 14px;
+        min-height: 70px;
+    }
+
+    .card-link {
+        display: inline-block;
+        color: #c59b52;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-top: 15px;
+    }
+
+    footer {
+        background: #181a1c;
+        border-top: 1px solid #39352d;
+        text-align: center;
+        padding: 30px;
+    }
+
+        footer span {
             color: #d6ad60;
             font-family: Georgia, serif;
-            font-size: 30px;
             font-weight: bold;
-            letter-spacing: 2px;
-            transition: 0.3s;
+            letter-spacing: 3px;
         }
 
-            .ddani-logo:hover {
-                color: #f2d18c;
-                transform: scale(1.05);
-            }
-
-        .logo-icon {
-            font-size: 27px;
-            color: #b88b42;
+        footer p {
+            color: #77736c;
+            font-size: 12px;
+            margin-top: 10px;
         }
 
-        .logo-text {
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-        }
+
 
         .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
+            flex-wrap: wrap;
         }
 
-            .nav-links a {
-                color: #e0e0e0;
-                text-decoration: none;
-                padding: 12px 16px;
-                font-size: 16px;
-                transition: 0.3s;
-            }
-
-                .nav-links a:hover {
-                    color: #d6ad60;
-                    background-color: #383838;
-                    border-radius: 5px;
-                }
-
-        .username {
-            color: #d6ad60;
-            font-size: 15px;
+        .hero h1 {
+            font-size: 45px;
         }
 
-        .build-character {
-        background-color: #c62828;
-        color: white;
-        border: none;
-        padding: 12px 28px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.2s;
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero {
+            padding: 60px 7%;
+        }
     }
+</style>
 
-    .build-character:hover {
-        background-color: #a31515;
-    }
-    </style>
+@code {
+    private string UserName;
 
-    @code {
-        private string UserName;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        var data = await MySession.GetAsync<string[]>("data");
+
+        if (data.Success && data.Value != null && data.Value.Length >= 2)
         {
-            if (!firstRender) return;
+            int userID = int.Parse(data.Value[0]);
+            UserName = data.Value[1];
 
-            var data = await MySession.GetAsync<string[]>("data");
-
-            if (data.Success)
-            {
-                int userID = int.Parse(data.Value[0]);
-                string username = data.Value[1];
-            }
-            else
-            {
-                navigationManager.NavigateTo("/login");
-            }
+            StateHasChanged();
+        }
+        else
+        {
+            navigationManager.NavigateTo("/login");
         }
     }
+}
