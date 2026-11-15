@@ -114,7 +114,7 @@ CREATE TABLE `characters` (
   PRIMARY KEY (`CharacterID`),
   KEY `UserID` (`UserID`),
   CONSTRAINT `characters_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +123,7 @@ CREATE TABLE `characters` (
 
 LOCK TABLES `characters` WRITE;
 /*!40000 ALTER TABLE `characters` DISABLE KEYS */;
-INSERT INTO `characters` VALUES (2,1,'string',0,'string',0,0);
+INSERT INTO `characters` VALUES (2,1,'string',0,'string',0,0),(4,1,'string',0,'string',0,0),(5,10,'meidan',1,'Priest',0,1),(7,1,'sdsdsd',1,'Mage',0,1),(8,10,'sdsdsd',1,'Rogue',0,1),(9,10,'Leo',1,'Priest',0,1),(10,5,'dvvccv',1,'Rogue',0,1);
 /*!40000 ALTER TABLE `characters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,6 +182,60 @@ LOCK TABLES `items` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `party`
+--
+
+DROP TABLE IF EXISTS `party`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `party` (
+  `PartyID` int NOT NULL AUTO_INCREMENT,
+  `AdminID` int NOT NULL,
+  `PartyName` varchar(100) NOT NULL,
+  `Available` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`PartyID`),
+  KEY `party_ibfk_1_idx` (`AdminID`),
+  CONSTRAINT `party_ibfk_1` FOREIGN KEY (`AdminID`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `party`
+--
+
+LOCK TABLES `party` WRITE;
+/*!40000 ALTER TABLE `party` DISABLE KEYS */;
+INSERT INTO `party` VALUES (1,1,'string',1);
+/*!40000 ALTER TABLE `party` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `partyuser`
+--
+
+DROP TABLE IF EXISTS `partyuser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `partyuser` (
+  `PartyID` int NOT NULL,
+  `UserID` int NOT NULL,
+  PRIMARY KEY (`PartyID`),
+  KEY `UserID` (`UserID`),
+  CONSTRAINT `partyuser_ibfk_1` FOREIGN KEY (`PartyID`) REFERENCES `party` (`PartyID`),
+  CONSTRAINT `partyuser_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `partyuser`
+--
+
+LOCK TABLES `partyuser` WRITE;
+/*!40000 ALTER TABLE `partyuser` DISABLE KEYS */;
+/*!40000 ALTER TABLE `partyuser` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -194,10 +248,11 @@ CREATE TABLE `users` (
   `UserPassword` varchar(255) NOT NULL,
   `UserEmail` varchar(100) NOT NULL,
   `UserRole` varchar(45) NOT NULL,
+  `UserActive` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `UserName` (`UserName`),
   UNIQUE KEY `UserEmail` (`UserEmail`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,7 +261,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'string','string','string','string'),(3,'sdsdsd','sdsdsd','dssdsd','');
+INSERT INTO `users` VALUES (1,'isan1','isan','isan','Admin',1),(5,'moshe','moshe123','moshecarmeli7@gmail.com','Admin',1),(10,'meidan','meidan','meidan','User',0),(13,'noam','noam','noam','User',1),(33,'mr','mr','me','User',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -219,4 +274,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-29 13:35:45
+-- Dump completed on 2026-11-15 11:30:46
